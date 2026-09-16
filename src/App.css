@@ -34,7 +34,7 @@ button {
     background 350ms ease;
 }
 
-/* Leuchtende Hintergrundflächen */
+/* Leuchtende HintergrundflÃ¤chen */
 
 .app::before,
 .app::after {
@@ -77,30 +77,68 @@ button {
     );
 }
 
-/* Q1: dunkles Glas und Grün */
+/* =========================================================
+   QUARTALS-DESIGNS
+
+   Hier liegen alle Farben und quartalsspezifischen Effekte.
+   FÃ¼r schnelle Farbanpassungen musst du nur diese vier BlÃ¶cke
+   bearbeiten. Der restliche Teil der App.css ist quartalsneutral.
+
+   --background   Seitenhintergrund
+   --text         Hauptschrift
+   --muted        dezente Schrift
+   --glass        normale GlasflÃ¤chen
+   --glass-strong krÃ¤ftige GlasflÃ¤chen und Pop-ups
+   --glass-border Rahmen der GlasflÃ¤chen
+   --accent       Hauptfarbe fÃ¼r Buttons und aktive Elemente
+   --accent-two   zweite Leuchtfarbe
+   --accent-three dritte Leuchtfarbe
+   --button-text  Schrift auf farbigen Buttons
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Q1 Â· Dunkles Glas und GrÃ¼n
+   --------------------------------------------------------- */
 
 .theme-frost {
+  /* Hintergrund und Schrift */
   --background: #050907;
   --text: #f4fff7;
   --muted: rgb(226 255 235 / 56%);
+
+  /* GlasflÃ¤chen */
   --glass: rgb(15 29 20 / 58%);
   --glass-strong: rgb(15 34 22 / 80%);
   --glass-border: rgb(177 255 197 / 15%);
+
+  /* Akzentfarben */
   --accent: #b9ff55;
   --accent-two: #16e276;
   --accent-three: #075f3a;
   --button-text: #071109;
 }
 
-/* Q2: helles Glas und Gelb */
+.theme-frost .quarter-heading::before {
+  border-radius: 40% 60% 55% 45%;
+  transform: translateY(-50%) rotate(-9deg);
+}
+
+/* ---------------------------------------------------------
+   Q2 Â· Helles Glas und Gelb
+   --------------------------------------------------------- */
 
 .theme-spring {
+  /* Hintergrund und Schrift */
   --background: #e9e6db;
   --text: #11110f;
   --muted: rgb(17 17 15 / 55%);
+
+  /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 48%);
   --glass-strong: rgb(255 255 255 / 72%);
   --glass-border: rgb(255 255 255 / 74%);
+
+  /* Akzentfarben */
   --accent: #ffe600;
   --accent-two: #fff45c;
   --accent-three: #c7ff28;
@@ -116,18 +154,31 @@ button {
   opacity: 0.55;
 }
 
-/* Q3: helles Glas und Orange */
+.theme-spring .quarter-heading::before {
+  box-shadow:
+    0 18px 55px rgb(130 110 0 / 18%),
+    inset -20px -20px 45px rgb(100 80 0 / 16%);
+}
+
+/* ---------------------------------------------------------
+   Q3 Â· Helles Glas und Orange
+   --------------------------------------------------------- */
 
 .theme-summer {
+  /* Hintergrund und Schrift */
   --background: #efe6df;
   --text: #17110e;
   --muted: rgb(23 17 14 / 55%);
+
+  /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 45%);
   --glass-strong: rgb(255 255 255 / 72%);
   --glass-border: rgb(255 255 255 / 72%);
+
+  /* Akzentfarben */
   --accent: #ff6a00;
   --accent-two: #ff4c18;
-  --accent-three: #ff3c94;
+  --accent-three: #ffc517;
   --button-text: #130b06;
 }
 
@@ -140,21 +191,32 @@ button {
   opacity: 0.55;
 }
 
-/* Q4: schwarzes Glas und Neon */
+.theme-summer .quarter-heading::before {
+  border-radius: 50% 44% 56% 50%;
+  box-shadow:
+    0 20px 60px rgb(255 70 20 / 24%),
+    inset -20px -20px 45px rgb(115 35 5 / 20%);
+}
+
+/* ---------------------------------------------------------
+   Q4 Â· Dunkles Violett und leuchtendes Orange
+   --------------------------------------------------------- */
 
 .theme-dusk {
+  /* Hintergrund und Schrift */
   --background: #09040d;
   --text: #fff8f1;
   --muted: rgb(255 238 224 / 58%);
 
+  /* GlasflÃ¤chen */
   --glass: rgb(37 17 43 / 58%);
   --glass-strong: rgb(31 12 38 / 84%);
   --glass-border: rgb(255 174 105 / 17%);
 
+  /* Akzentfarben */
   --accent: #ff6a00;
   --accent-two: #ff2f0a;
   --accent-three: #ffc247;
-
   --button-text: #160702;
 }
 
@@ -186,6 +248,55 @@ button {
       #351047 42%,
       transparent 69%
     );
+}
+
+.theme-dusk .quarter-heading {
+  border-color: rgb(255 151 73 / 18%);
+  background:
+    linear-gradient(
+      125deg,
+      rgb(71 27 72 / 68%),
+      rgb(18 7 23 / 82%) 48%,
+      rgb(50 13 57 / 64%)
+    ),
+    var(--glass);
+  box-shadow:
+    0 30px 90px rgb(0 0 0 / 38%),
+    inset 0 1px 0 rgb(255 220 190 / 12%),
+    inset 0 -40px 90px rgb(76 13 81 / 18%);
+}
+
+.theme-dusk .quarter-heading::before {
+  top: 49%;
+  right: clamp(20px, 8vw, 105px);
+  width: clamp(175px, 29vw, 330px);
+  aspect-ratio: 1.08 / 1;
+  border-radius:
+    42% 58% 67% 33%
+    /
+    36% 42% 58% 64%;
+  background:
+    radial-gradient(
+      circle at 31% 24%,
+      rgb(255 248 225 / 95%),
+      rgb(255 194 93 / 46%) 7%,
+      transparent 15%
+    ),
+    radial-gradient(ellipse at 72% 25%, #ffc247, transparent 34%),
+    radial-gradient(ellipse at 73% 71%, #ff6a00, transparent 45%),
+    radial-gradient(ellipse at 28% 72%, #ff2f0a, transparent 47%),
+    radial-gradient(ellipse at 43% 43%, #6d176f, #26092f 61%, #100414 100%);
+  box-shadow:
+    0 0 55px rgb(255 74 0 / 30%),
+    0 0 115px rgb(122 21 143 / 28%),
+    inset -28px -30px 55px rgb(22 2 20 / 42%),
+    inset 18px 14px 34px rgb(255 189 105 / 13%);
+  filter: saturate(145%) contrast(106%);
+  transform:
+    translateY(-50%)
+    rotate(-11deg)
+    scaleX(1.04)
+    scaleY(0.94);
 }
 
 /* Kopfbereich */
@@ -446,7 +557,7 @@ button {
   display: none;
 }
 
-/* Große Quartalskarte */
+/* GroÃŸe Quartalskarte */
 
 .quarter-heading {
   position: relative;
@@ -471,23 +582,6 @@ button {
     inset 0 1px 0 rgb(255 255 255 / 15%);
   backdrop-filter: blur(28px) saturate(145%);
   -webkit-backdrop-filter: blur(28px) saturate(145%);
-}
-.theme-dusk .quarter-heading {
-  background:
-    linear-gradient(
-      125deg,
-      rgb(71 27 72 / 68%),
-      rgb(18 7 23 / 82%) 48%,
-      rgb(50 13 57 / 64%)
-    ),
-    var(--glass);
-
-  border-color: rgb(255 151 73 / 18%);
-
-  box-shadow:
-    0 30px 90px rgb(0 0 0 / 38%),
-    inset 0 1px 0 rgb(255 220 190 / 12%),
-    inset 0 -40px 90px rgb(76 13 81 / 18%);
 }
 /* Die leuchtende abstrakte Kugel */
 
@@ -527,88 +621,8 @@ button {
     inset -20px -20px 45px rgb(0 0 0 / 35%);
   filter: saturate(135%);
   transform: translateY(-50%);
-}
-.theme-dusk .quarter-heading::before {
-  top: 49%;
-  right: clamp(20px, 8vw, 105px);
-
-  width: clamp(175px, 29vw, 330px);
-  aspect-ratio: 1.08 / 1;
-
-  border-radius:
-    42% 58% 67% 33%
-    /
-    36% 42% 58% 64%;
-
-  background:
-    radial-gradient(
-      circle at 31% 24%,
-      rgb(255 248 225 / 95%),
-      rgb(255 194 93 / 46%) 7%,
-      transparent 15%
-    ),
-    radial-gradient(
-      ellipse at 72% 25%,
-      #ffc247,
-      transparent 34%
-    ),
-    radial-gradient(
-      ellipse at 73% 71%,
-      #ff6a00,
-      transparent 45%
-    ),
-    radial-gradient(
-      ellipse at 28% 72%,
-      #ff2f0a,
-      transparent 47%
-    ),
-    radial-gradient(
-      ellipse at 43% 43%,
-      #6d176f,
-      #26092f 61%,
-      #100414 100%
-    );
-
-  box-shadow:
-    0 0 55px rgb(255 74 0 / 30%),
-    0 0 115px rgb(122 21 143 / 28%),
-    inset -28px -30px 55px rgb(22 2 20 / 42%),
-    inset 18px 14px 34px rgb(255 189 105 / 13%);
-
-  filter: saturate(145%) contrast(106%);
-
-  transform:
-    translateY(-50%)
-    rotate(-11deg)
-    scaleX(1.04)
-    scaleY(0.94);
-
-  animation: quarter-wobble 9s ease-in-out infinite;
-}
-.theme-frost .quarter-heading::before,
-.theme-spring .quarter-heading::before,
-.theme-summer .quarter-heading::before,
-.theme-dusk .quarter-heading::before {
   animation: quarter-wobble 9s ease-in-out infinite;
   will-change: transform, border-radius;
-}
-
-.theme-frost .quarter-heading::before {
-  border-radius: 40% 60% 55% 45%;
-  transform: translateY(-50%) rotate(-9deg);
-}
-
-.theme-spring .quarter-heading::before {
-  box-shadow:
-    0 18px 55px rgb(130 110 0 / 18%),
-    inset -20px -20px 45px rgb(100 80 0 / 16%);
-}
-
-.theme-summer .quarter-heading::before {
-  border-radius: 50% 44% 56% 50%;
-  box-shadow:
-    0 20px 60px rgb(255 70 20 / 24%),
-    inset -20px -20px 45px rgb(115 35 5 / 20%);
 }
 
 .quarter-heading > * {
@@ -643,6 +657,7 @@ button {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .add-button:disabled {
@@ -1067,7 +1082,7 @@ button {
       scaleY(0.96);
   }
 }
-/* Diesen gesamten Abschnitt unten an deine vorhandene App.css anhängen. */
+/* Allgemeine Dialoge und Formulare */
 
 .modal-backdrop {
   position: fixed;
@@ -1313,5 +1328,3 @@ button {
     grid-template-columns: 1fr 1fr;
   }
 }
-
-
