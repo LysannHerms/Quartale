@@ -1,0 +1,743 @@
+.movement-module {
+  display: grid;
+  gap: 18px;
+}
+
+.movement-surface {
+  padding: clamp(18px, 3vw, 30px);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  background: var(--glass);
+  box-shadow:
+    0 22px 65px rgb(0 0 0 / 14%),
+    inset 0 1px 0 rgb(255 255 255 / 10%);
+  backdrop-filter: blur(28px) saturate(145%);
+  -webkit-backdrop-filter: blur(28px) saturate(145%);
+}
+
+.movement-section-heading,
+.movement-habit-heading,
+.movement-form-actions,
+.movement-row-actions,
+.movement-arrow-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.movement-section-heading,
+.movement-habit-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.movement-section-heading {
+  margin-bottom: 22px;
+}
+
+.movement-section-heading h3,
+.movement-habit-heading h4 {
+  margin: 0;
+  font-weight: 520;
+  letter-spacing: -0.04em;
+}
+
+.movement-section-heading h3 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.movement-habit-heading h4 {
+  font-size: 1.25rem;
+}
+
+.movement-primary-button,
+.movement-secondary-button,
+.movement-soft-button {
+  min-height: 44px;
+  padding: 0 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text);
+  font-weight: 700;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  cursor: pointer;
+}
+
+.movement-primary-button {
+  color: var(--button-text);
+  border-color: transparent;
+  background: var(--accent);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.movement-secondary-button {
+  background: transparent;
+}
+
+.movement-primary-button svg,
+.movement-secondary-button svg,
+.movement-soft-button svg,
+.movement-text-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.movement-text-button {
+  min-height: 38px;
+  padding: 3px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-weight: 700;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.movement-arrow-buttons button,
+.movement-row-actions button,
+.movement-close-button,
+.movement-add-day,
+.movement-goal-check {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 6%);
+  cursor: pointer;
+}
+
+.movement-arrow-buttons button svg,
+.movement-row-actions button svg,
+.movement-close-button svg,
+.movement-add-day svg,
+.movement-goal-check svg {
+  width: 17px;
+  height: 17px;
+}
+
+.movement-week-table {
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  background: rgb(0 0 0 / 8%);
+}
+
+.movement-day-row {
+  min-height: 74px;
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) 50px;
+  align-items: stretch;
+}
+
+.movement-day-row + .movement-day-row {
+  border-top: 1px solid var(--glass-border);
+}
+
+.movement-day-row.outside-quarter {
+  opacity: 0.38;
+}
+
+.movement-day-label {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--glass-border);
+}
+
+.movement-day-label strong,
+.movement-day-label span {
+  display: block;
+}
+
+.movement-day-label strong {
+  font-size: 0.82rem;
+}
+
+.movement-day-label span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.movement-day-content {
+  min-width: 0;
+  padding: 9px;
+  display: grid;
+  align-content: center;
+  gap: 7px;
+}
+
+.movement-day-empty {
+  padding-left: 5px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.movement-add-day {
+  align-self: center;
+  justify-self: center;
+}
+
+.movement-add-day:disabled {
+  cursor: default;
+  opacity: 0;
+}
+
+.movement-plan-item {
+  min-width: 0;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 5%);
+}
+
+.movement-plan-item > div:first-child {
+  min-width: 0;
+}
+
+.movement-plan-item > div:first-child strong,
+.movement-plan-item > div:first-child span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.movement-plan-item > div:first-child span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.movement-plan-item.status-completed {
+  opacity: 0.7;
+}
+
+.movement-plan-item.status-postponed {
+  border-style: dashed;
+}
+
+.movement-status {
+  padding: 5px 8px;
+  color: var(--muted);
+  font-size: 0.67rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 5%);
+}
+
+.movement-row-actions {
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+
+.movement-row-actions button {
+  width: 34px;
+  height: 34px;
+}
+
+.movement-habit-heading {
+  margin-top: 26px;
+  padding-top: 23px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.movement-habits,
+.movement-goal-list,
+.movement-session-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.movement-inline-empty {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+}
+
+.movement-habit-row {
+  padding: 13px;
+  display: grid;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(260px, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 19px;
+  background: rgb(255 255 255 / 5%);
+}
+
+.movement-habit-row.paused {
+  opacity: 0.55;
+}
+
+.movement-habit-title strong,
+.movement-habit-title span {
+  display: block;
+}
+
+.movement-habit-title span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.movement-habit-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(30px, 1fr));
+  gap: 5px;
+}
+
+.movement-habit-days button {
+  min-width: 0;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.movement-habit-days button span {
+  font-size: 0.64rem;
+}
+
+.movement-habit-days button svg {
+  display: none;
+  width: 15px;
+  height: 15px;
+}
+
+.movement-habit-days button.checked {
+  color: var(--button-text);
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.movement-habit-days button.checked span {
+  display: none;
+}
+
+.movement-habit-days button.checked svg {
+  display: block;
+}
+
+.movement-habit-days button:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.movement-goals-empty,
+.movement-log-empty {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.movement-goals-empty > svg {
+  width: 46px;
+  height: 46px;
+  padding: 13px;
+  color: var(--button-text);
+  border-radius: 16px;
+  background: var(--accent);
+}
+
+.movement-goal-list article,
+.movement-session-list article {
+  position: relative;
+  padding: 15px;
+  display: grid;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  background: rgb(0 0 0 / 8%);
+}
+
+.movement-goal-list article {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.movement-goal-list article.completed {
+  opacity: 0.62;
+}
+
+.movement-goal-list article.completed h4 {
+  text-decoration: line-through;
+}
+
+.movement-goal-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+}
+
+.movement-goal-list h4,
+.movement-session-list h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.movement-goal-list p,
+.movement-session-list p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.movement-week-review {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(130px, 0.7fr) minmax(200px, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.movement-week-review > div {
+  min-width: 0;
+  padding: 15px;
+  border-radius: 19px;
+  background: rgb(255 255 255 / 5%);
+}
+
+.movement-week-review > div > strong,
+.movement-week-review > div > span {
+  display: block;
+}
+
+.movement-week-review > div > strong {
+  font-size: 1.45rem;
+  font-weight: 520;
+}
+
+.movement-week-review > div > span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.movement-rating-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.movement-rating-summary span {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  color: var(--text) !important;
+  font-size: 0.85rem !important;
+}
+
+.movement-rating-summary svg {
+  width: 21px;
+  height: 21px;
+}
+
+.movement-session-list article {
+  grid-template-columns: 90px minmax(0, 1fr) auto;
+}
+
+.movement-session-date {
+  align-self: stretch;
+  padding-right: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--glass-border);
+}
+
+.movement-session-date strong,
+.movement-session-date span {
+  display: block;
+}
+
+.movement-session-date span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.movement-rating-label {
+  display: inline-block;
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+html:has(.movement-modal-backdrop),
+body:has(.movement-modal-backdrop) {
+  overflow: hidden;
+}
+
+.movement-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  background: rgb(3 1 6 / 76%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.movement-dialog {
+  width: min(720px, 100%);
+  max-height: calc(100dvh - 16px);
+  padding: clamp(20px, 3vw, 30px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 31px;
+  background: var(--glass-strong);
+  box-shadow: 0 30px 100px rgb(0 0 0 / 58%);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.movement-dialog::-webkit-scrollbar {
+  display: none;
+}
+
+.movement-dialog-header {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.movement-dialog-header h2 {
+  margin: 4px 0 0;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.movement-form {
+  display: grid;
+  gap: 19px;
+}
+
+.movement-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.movement-form-note {
+  margin: -7px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.movement-rating-picker {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.movement-rating-picker legend {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.movement-rating-picker > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.movement-rating-picker button {
+  min-width: 0;
+  min-height: 88px;
+  padding: 12px 8px;
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 6%);
+  cursor: pointer;
+}
+
+.movement-rating-picker button.active {
+  color: var(--button-text);
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.movement-rating-picker button svg {
+  width: 27px;
+  height: 27px;
+}
+
+.movement-rating-picker button strong {
+  font-size: 0.72rem;
+}
+
+.movement-rating-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.movement-rating-label svg {
+  width: 16px;
+  height: 16px;
+}
+
+.movement-form-actions {
+  justify-content: flex-end;
+  padding-top: 5px;
+}
+
+@media (max-width: 800px) {
+  .movement-plan-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .movement-plan-item .movement-row-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .movement-habit-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .movement-habit-days {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 620px) {
+  .movement-surface {
+    padding: 17px;
+    border-radius: 23px;
+  }
+
+  .movement-section-heading > div:first-child,
+  .movement-section-heading > .movement-primary-button,
+  .movement-section-heading > .movement-soft-button {
+    width: 100%;
+  }
+
+  .movement-day-row {
+    grid-template-columns: 55px minmax(0, 1fr) 42px;
+  }
+
+  .movement-day-label {
+    padding: 9px;
+  }
+
+  .movement-plan-item {
+    grid-template-columns: 1fr;
+  }
+
+  .movement-plan-item .movement-row-actions {
+    grid-column: auto;
+    justify-content: flex-start;
+  }
+
+  .movement-status {
+    justify-self: start;
+  }
+
+  .movement-inline-empty {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .movement-habit-row {
+    grid-template-columns: 1fr;
+  }
+
+  .movement-habit-days,
+  .movement-habit-row > .movement-row-actions {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .movement-week-review {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .movement-week-review .movement-rating-summary {
+    grid-column: 1 / -1;
+  }
+
+  .movement-session-list article {
+    grid-template-columns: 1fr auto;
+  }
+
+  .movement-session-date {
+    grid-column: 1 / -1;
+    padding: 0 0 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .movement-form-grid,
+  .movement-rating-picker > div {
+    grid-template-columns: 1fr;
+  }
+
+  .movement-rating-picker button {
+    min-height: 58px;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+  }
+
+  .movement-form-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .movement-form-actions button {
+    width: 100%;
+  }
+
+  .movement-dialog {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+}
