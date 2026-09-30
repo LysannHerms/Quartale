@@ -102,25 +102,57 @@ button {
 
 .theme-frost {
   /* Hintergrund und Schrift */
-  --background: #050907;
+  --background: #acecfc;
   --text: #f4fff7;
-  --muted: rgb(226 255 235 / 56%);
+  --muted: rgb(23 17 14 / 55%);
 
   /* GlasflÃ¤chen */
-  --glass: rgb(15 29 20 / 58%);
-  --glass-strong: rgb(15 34 22 / 80%);
-  --glass-border: rgb(177 255 197 / 15%);
+  --glass: rgb(255 255 255 / 48%);
+  --glass-strong: rgb(255 255 255 / 72%);
+  --glass-border: rgb(255 255 255 / 74%);
 
   /* Akzentfarben */
-  --accent: #b9ff55;
-  --accent-two: #16e276;
-  --accent-three: #075f3a;
+  --accent: #1e99b4;
+  --accent-two: #89e0f4;
+  --accent-three: #1d96b8;
   --button-text: #071109;
 }
 
 .theme-frost .quarter-heading::before {
   border-radius: 40% 60% 55% 45%;
   transform: translateY(-50%) rotate(-9deg);
+}
+.theme-frost .quarter-heading::before {
+  top: 49%;
+  right: clamp(20px, 8vw, 105px);
+  width: clamp(175px, 29vw, 330px);
+  aspect-ratio: 1.08 / 1;
+  border-radius:
+    42% 58% 67% 33%
+    /
+    36% 42% 58% 64%;
+  background:
+    radial-gradient(
+      circle at 31% 24%,
+      rgb(255 248 225 / 95%),
+      rgba(233, 225, 236, 0.46) 7%,
+      transparent 15%
+    ),
+    radial-gradient(ellipse at 72% 25%, #0b4754, transparent 34%),
+    radial-gradient(ellipse at 73% 71%, #06344f, transparent 45%),
+    radial-gradient(ellipse at 28% 72%, #70d1e2, transparent 47%),
+    radial-gradient(ellipse at 43% 43%, #9de9eb, #4f92b8 61%, #022b3b 100%);
+  box-shadow:
+    0 0 55px rgba(11, 126, 138, 0.3),
+    0 0 115px rgba(122, 21, 143, 0.28),
+    inset -28px -30px 55px rgba(22, 2, 20, 0.42),
+    inset 18px 14px 34px rgba(255, 189, 105, 0.13);
+  filter: saturate(145%) contrast(106%);
+  transform:
+    translateY(-50%)
+    rotate(-11deg)
+    scaleX(1.04)
+    scaleY(1.9);
 }
 
 /* ---------------------------------------------------------
@@ -129,9 +161,9 @@ button {
 
 .theme-spring {
   /* Hintergrund und Schrift */
-  --background: #e9e6db;
-  --text: #11110f;
-  --muted: rgb(17 17 15 / 55%);
+  --background: #78e186;
+  --text: #f4fff7;
+  --muted: rgb(23 17 14 / 55%);
 
   /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 48%);
@@ -139,10 +171,10 @@ button {
   --glass-border: rgb(255 255 255 / 74%);
 
   /* Akzentfarben */
-  --accent: #ffe600;
-  --accent-two: #fff45c;
-  --accent-three: #c7ff28;
-  --button-text: #11110f;
+  --accent: #569e0d;
+  --accent-two: #a5fe4c;
+  --accent-three: #409917;
+  --button-text: #083f0d;
 }
 
 .theme-spring::before {
@@ -159,27 +191,58 @@ button {
     0 18px 55px rgb(130 110 0 / 18%),
     inset -20px -20px 45px rgb(100 80 0 / 16%);
 }
-
+.theme-spring .quarter-heading::before {
+  top: 49%;
+  right: clamp(20px, 8vw, 105px);
+  width: clamp(175px, 29vw, 330px);
+  aspect-ratio: 1.08 / 1;
+  border-radius:
+    42% 58% 67% 33%
+    /
+    36% 42% 58% 64%;
+  background:
+    radial-gradient(
+      circle at 31% 24%,
+      rgb(255 248 225 / 95%),
+      rgba(233, 225, 236, 0.46) 7%,
+      transparent 15%
+    ),
+    radial-gradient(ellipse at 72% 25%, #225607, transparent 34%),
+    radial-gradient(ellipse at 73% 71%, #1e6908, transparent 45%),
+    radial-gradient(ellipse at 28% 72%, #2bd536, transparent 47%),
+    radial-gradient(ellipse at 43% 43%, #85c87c, #61b84f 61%, #145204 100%);
+  box-shadow:
+    0 0 55px rgba(8, 87, 27, 0.3),
+    0 0 115px rgba(122, 21, 143, 0.28),
+    inset -28px -30px 55px rgba(22, 2, 20, 0.42),
+    inset 18px 14px 34px rgba(255, 189, 105, 0.13);
+  filter: saturate(145%) contrast(106%);
+  transform:
+    translateY(-50%)
+    rotate(-11deg)
+    scaleX(1.04)
+    scaleY(1.9);
+}
 /* ---------------------------------------------------------
    Q3 Â· Helles Glas und Orange
    --------------------------------------------------------- */
 
 .theme-summer {
   /* Hintergrund und Schrift */
-  --background: #efe6df;
-  --text: #17110e;
+  --background: #eba876;
+ --text: #f4fff7;
   --muted: rgb(23 17 14 / 55%);
 
   /* GlasflÃ¤chen */
-  --glass: rgb(255 255 255 / 45%);
+  --glass: rgb(255 255 255 / 48%);
   --glass-strong: rgb(255 255 255 / 72%);
-  --glass-border: rgb(255 255 255 / 72%);
+  --glass-border: rgb(255 255 255 / 74%);
 
   /* Akzentfarben */
   --accent: #ff6a00;
   --accent-two: #ff4c18;
   --accent-three: #ffc517;
-  --button-text: #130b06;
+  --button-text: #101306;
 }
 
 .theme-summer::before {
@@ -194,30 +257,61 @@ button {
 .theme-summer .quarter-heading::before {
   border-radius: 50% 44% 56% 50%;
   box-shadow:
-    0 20px 60px rgb(255 70 20 / 24%),
-    inset -20px -20px 45px rgb(115 35 5 / 20%);
+    0 20px 60px rgba(255, 70, 20, 0.24),
+    inset -20px -20px 45px rgba(115, 35, 5, 0.2);
 }
-
+.theme-summer .quarter-heading::before {
+  top: 49%;
+  right: clamp(20px, 8vw, 105px);
+  width: clamp(175px, 29vw, 330px);
+  aspect-ratio: 1.08 / 1;
+  border-radius:
+    42% 58% 67% 33%
+    /
+    36% 42% 58% 64%;
+  background:
+    radial-gradient(
+      circle at 31% 24%,
+      rgb(255 248 225 / 95%),
+      rgba(233, 225, 236, 0.46) 7%,
+      transparent 15%
+    ),
+    radial-gradient(ellipse at 72% 25%, #ffdc19, transparent 34%),
+    radial-gradient(ellipse at 73% 71%, #ff920d, transparent 45%),
+    radial-gradient(ellipse at 28% 72%, #ff950a, transparent 47%),
+    radial-gradient(ellipse at 43% 43%, #ff7b07, #ec670d 61%, #ff9616 100%);
+  box-shadow:
+    0 0 55px rgba(255, 74, 0, 0.3),
+    0 0 115px rgba(122, 21, 143, 0.28),
+    inset -28px -30px 55px rgba(22, 2, 20, 0.42),
+    inset 18px 14px 34px rgba(255, 189, 105, 0.13);
+  filter: saturate(145%) contrast(106%);
+  transform:
+    translateY(-50%)
+    rotate(-11deg)
+    scaleX(1.04)
+    scaleY(1.9);
+}
 /* ---------------------------------------------------------
    Q4 Â· Dunkles Violett und leuchtendes Orange
    --------------------------------------------------------- */
 
 .theme-dusk {
   /* Hintergrund und Schrift */
-  --background: #09040d;
-  --text: #fff8f1;
-  --muted: rgb(255 238 224 / 58%);
+  --background: #cc9bf4;
+  --text: #f4fff7;
+  --muted: rgba(0, 0, 0, 0.55);
 
   /* GlasflÃ¤chen */
-  --glass: rgb(37 17 43 / 58%);
-  --glass-strong: rgb(31 12 38 / 84%);
-  --glass-border: rgb(255 174 105 / 17%);
+  --glass: rgb(255 255 255 / 48%);
+  --glass-strong: rgb(255 255 255 / 72%);
+  --glass-border: rgb(255 255 255 / 74%);
 
   /* Akzentfarben */
-  --accent: #ff6a00;
-  --accent-two: #ff2f0a;
-  --accent-three: #ffc247;
-  --button-text: #160702;
+  --accent: #5f0c0c;
+  --accent-two: #820f0f;
+  --accent-three: #7f1414;
+  --button-text: #fcf8fd;
 }
 
 .theme-dusk::before {
@@ -255,15 +349,15 @@ button {
   background:
     linear-gradient(
       125deg,
-      rgb(71 27 72 / 68%),
-      rgb(18 7 23 / 82%) 48%,
-      rgb(50 13 57 / 64%)
+      rgba(241, 195, 242, 0.68),
+      rgba(159, 86, 193, 0.82) 48%,
+      rgba(153, 45, 196, 0.64)
     ),
     var(--glass);
   box-shadow:
-    0 30px 90px rgb(0 0 0 / 38%),
-    inset 0 1px 0 rgb(255 220 190 / 12%),
-    inset 0 -40px 90px rgb(76 13 81 / 18%);
+    0 30px 90px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 220, 190, 0.12),
+    inset 0 -40px 90px rgba(76, 13, 81, 0.18);
 }
 
 .theme-dusk .quarter-heading::before {
@@ -279,24 +373,24 @@ button {
     radial-gradient(
       circle at 31% 24%,
       rgb(255 248 225 / 95%),
-      rgb(255 194 93 / 46%) 7%,
+      rgba(233, 225, 236, 0.46) 7%,
       transparent 15%
     ),
-    radial-gradient(ellipse at 72% 25%, #ffc247, transparent 34%),
-    radial-gradient(ellipse at 73% 71%, #ff6a00, transparent 45%),
-    radial-gradient(ellipse at 28% 72%, #ff2f0a, transparent 47%),
-    radial-gradient(ellipse at 43% 43%, #6d176f, #26092f 61%, #100414 100%);
+    radial-gradient(ellipse at 72% 25%, #680606, transparent 34%),
+    radial-gradient(ellipse at 73% 71%, #690505, transparent 45%),
+    radial-gradient(ellipse at 28% 72%, #510606, transparent 47%),
+    radial-gradient(ellipse at 43% 43%, #4e0303, #330202 61%, #5f0202 100%);
   box-shadow:
-    0 0 55px rgb(255 74 0 / 30%),
-    0 0 115px rgb(122 21 143 / 28%),
-    inset -28px -30px 55px rgb(22 2 20 / 42%),
-    inset 18px 14px 34px rgb(255 189 105 / 13%);
+    0 0 55px rgba(255, 74, 0, 0.3),
+    0 0 115px rgba(122, 21, 143, 0.28),
+    inset -28px -30px 55px rgba(22, 2, 20, 0.42),
+    inset 18px 14px 34px rgba(255, 189, 105, 0.13);
   filter: saturate(145%) contrast(106%);
   transform:
     translateY(-50%)
     rotate(-11deg)
     scaleX(1.04)
-    scaleY(0.94);
+    scaleY(1.9);
 }
 
 /* Kopfbereich */
@@ -1036,7 +1130,7 @@ button {
   *,
   *::before,
   *::after {
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.5ms !important;
     animation: none !important;
   }
 }
@@ -1050,10 +1144,10 @@ button {
       36% 42% 58% 64%;
 
     transform:
-      translateY(-50%)
+      translateY(-60%)
       rotate(-11deg)
-      scaleX(1.04)
-      scaleY(0.94);
+      scaleX(1.9)
+      scaleY(1.9);
   }
 
   35% {
@@ -1065,8 +1159,8 @@ button {
     transform:
       translateY(-52%)
       rotate(-6deg)
-      scaleX(0.98)
-      scaleY(1.03);
+      scaleX(2.1)
+      scaleY(2.1);
   }
 
   70% {
@@ -1078,8 +1172,8 @@ button {
     transform:
       translateY(-48%)
       rotate(-15deg)
-      scaleX(1.06)
-      scaleY(0.96);
+      scaleX(2.4)
+      scaleY(2.4);
   }
 }
 /* Allgemeine Dialoge und Formulare */
