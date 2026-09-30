@@ -67,7 +67,7 @@
   min-width: 0;
   padding: 20px;
   color: var(--text);
-  background: var(--glass);
+  background: var(--glass) 10%;
   border: 1px solid var(--glass-border);
   border-radius: 28px;
   box-shadow:
@@ -121,8 +121,8 @@
   padding: 11px 8px;
   color: var(--text);
   text-align: left;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(255 255 255 / 7%);
+  background: var(--glass) 10%;
+  border: 1px solid var(--glass-border);
   border-radius: 18px;
   cursor: pointer;
   transition:
@@ -134,7 +134,7 @@
 .calendar-week-day:hover,
 .calendar-week-day.selected {
   border-color: color-mix(in srgb, var(--accent) 52%, transparent);
-  background: color-mix(in srgb, var(--accent) 9%, var(--glass));
+  background: color-mix(in srgb, var(--background) 40%, var(--glass) 20% );
   transform: translateY(-1px);
 }
 
@@ -306,7 +306,7 @@
 .calendar-month-grid > button:hover,
 .calendar-month-grid > button.selected {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--glass));
+  background: color-mix(in srgb, var(--background) 40%, var(--glass));
 }
 
 .calendar-month-grid > button.outside,
@@ -337,12 +337,12 @@
   box-shadow: 0 0 8px color-mix(in srgb, var(--calendar-tag-color) 40%, transparent);
 }
 
-.tag-todo { --calendar-tag-color: var(--accent); }
-.tag-movement { --calendar-tag-color: var(--accent-two); }
-.tag-internship { --calendar-tag-color: var(--accent-three); }
-.tag-leisure { --calendar-tag-color: color-mix(in srgb, var(--accent) 58%, var(--text)); }
-.tag-university { --calendar-tag-color: color-mix(in srgb, var(--accent-two) 58%, var(--accent-three)); }
-.tag-bingo { --calendar-tag-color: color-mix(in srgb, var(--accent) 50%, var(--accent-three)); }
+.tag-todo { --calendar-tag-color: rgba(186, 58, 182, 0.267); }
+.tag-movement { --calendar-tag-color: rgba(58, 186, 182, 0.267); }
+.tag-internship { --calendar-tag-color: rgba(58, 186, 77, 0.267); }
+.tag-leisure { --calendar-tag-color: rgba(25, 50, 119, 0.267); }
+.tag-university { --calendar-tag-color: rgba(225, 145, 53, 0.267); }
+.tag-bingo { --calendar-tag-color: rgba(186, 30, 61, 0.267); }
 
 .calendar-legend {
   flex-wrap: wrap;

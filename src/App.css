@@ -102,14 +102,14 @@ button {
 
 .theme-frost {
   /* Hintergrund und Schrift */
-  --background: #acecfc;
+  --background: #7cd9f0;
   --text: #f4fff7;
-  --muted: rgb(23 17 14 / 55%);
+  --muted: rgb(23 17 14 / 40%);
 
   /* GlasflÃ¤chen */
-  --glass: rgb(255 255 255 / 48%);
-  --glass-strong: rgb(255 255 255 / 72%);
-  --glass-border: rgb(255 255 255 / 74%);
+  --glass: rgb(255 255 255 / 50%);
+  --glass-strong: rgb(255 255 255 / 62%);
+  --glass-border: rgb(255 255 255 / 64%);
 
   /* Akzentfarben */
   --accent: #1e99b4;
@@ -229,7 +229,7 @@ button {
 
 .theme-summer {
   /* Hintergrund und Schrift */
-  --background: #eba876;
+  --background: #f7a466;
  --text: #f4fff7;
   --muted: rgb(23 17 14 / 55%);
 
@@ -298,7 +298,7 @@ button {
 
 .theme-dusk {
   /* Hintergrund und Schrift */
-  --background: #cc9bf4;
+  --background: #913fd4;
   --text: #f4fff7;
   --muted: rgba(0, 0, 0, 0.55);
 

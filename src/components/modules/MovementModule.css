@@ -131,7 +131,7 @@
   overflow: hidden;
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  background: rgb(0 0 0 / 8%);
+  background: var(--glass);
 }
 
 .movement-day-row {
