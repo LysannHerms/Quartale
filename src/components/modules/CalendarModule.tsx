@@ -56,7 +56,13 @@ type CalendarItem = {
   editable: boolean
 }
 
-
+const calendarTags: Array<{ id: CalendarTag; label: string }> = [
+  { id: 'todo', label: 'To-do' },
+  { id: 'movement', label: 'Bewegung' },
+  { id: 'internship', label: 'Praktikum' },
+  { id: 'leisure', label: 'Freizeit' },
+  { id: 'university', label: 'Uni' },
+]
 
 const viewLabels: Record<CalendarView, string> = {
   day: 'Tag',
@@ -359,6 +365,16 @@ export function CalendarModule({
             }}
           />
         )}
+
+        <div className="calendar-legend">
+          {calendarTags.map((tag) => (
+            <span key={tag.id}>
+              <i className={`calendar-dot tag-${tag.id}`} />
+              {tag.label}
+            </span>
+          ))}
+          <span><i className="calendar-dot tag-bingo" />Bingo</span>
+        </div>
       </section>
 
       {editorIsOpen &&
@@ -551,6 +567,7 @@ function CalendarEntryForm({
   const [kind, setKind] = useState<CalendarKind>(initialEntry?.calendarKind ?? 'todo')
   const [period, setPeriod] = useState<CalendarPeriod>(initialEntry?.calendarPeriod ?? 'day')
   const [date, setDate] = useState(initialEntry?.date ?? initialDate)
+  const [tag, setTag] = useState<CalendarTag>(initialEntry?.calendarTag ?? 'todo')
   const [details, setDetails] = useState(initialEntry?.details ?? '')
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -566,6 +583,7 @@ function CalendarEntryForm({
       timing: 'fixed',
       date,
       calendarKind: kind,
+      calendarTag: tag,
       calendarPeriod: kind === 'event' ? 'day' : period,
       completed: initialEntry?.completed ?? false,
       createdAt: initialEntry?.createdAt ?? new Date().toISOString(),
@@ -617,7 +635,14 @@ function CalendarEntryForm({
 
           <div className="calendar-form-choice calendar-tag-choice">
             <span>Tag</span>
-          
+            <div>
+              {calendarTags.map((option) => (
+                <button type="button" key={option.id} className={`${tag === option.id ? 'active' : ''} tag-${option.id}`} onClick={() => setTag(option.id)}>
+                  <i className={`calendar-dot tag-${option.id}`} />
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <label className="form-field">
