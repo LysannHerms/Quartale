@@ -90,6 +90,10 @@ export type ProjectActivity = {
   quarterId: QuarterId
   title: string
   description: string
+  imageData?: string
+  /** Kompatibilität mit der kurzzeitig verwendeten Bild-URL-Version. */
+  imageUrl?: string
+  linkUrl?: string
   filterIds: string[]
   status: ActivityStatus
   createdAt: string

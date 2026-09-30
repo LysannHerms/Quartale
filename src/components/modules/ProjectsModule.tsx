@@ -6,6 +6,7 @@ import {
   ChevronRight,
   CirclePlus,
   Download,
+  ExternalLink,
   FileJson,
   Pencil,
   Plus,
@@ -37,6 +38,8 @@ const defaultFilters: Record<ProjectFilterKind, string[]> = {
 type ImportedActivity = {
   title: string
   description: string
+  imageData: string
+  linkUrl: string
   status: ActivityStatus
   filters: Record<ProjectFilterKind, string[]>
 }
@@ -151,9 +154,30 @@ export function ProjectsModule({
               updatedAt,
               steps: project.steps.map((step) =>
                 step.id === stepId
-                  ? { ...step, completed: !step.completed }
+                  ? {
+                      ...step,
+                      completed: !step.completed,
+                      completedAt: !step.completed ? updatedAt : undefined,
+                    }
                   : step,
               ),
+            }
+          : project,
+      ),
+    }))
+  }
+
+  function deleteProjectStep(projectId: string, stepId: string) {
+    if (!window.confirm('Möchtest du diesen Schritt wirklich löschen?')) return
+    const updatedAt = new Date().toISOString()
+    setData((currentData) => ({
+      ...currentData,
+      projects: currentData.projects.map((project) =>
+        project.id === projectId
+          ? {
+              ...project,
+              updatedAt,
+              steps: project.steps.filter((step) => step.id !== stepId),
             }
           : project,
       ),
@@ -293,18 +317,20 @@ export function ProjectsModule({
   function exportActivities() {
     const filterMap = new Map(filters.map((filter) => [filter.id, filter]))
     const payload = {
-      version: 1,
+      version: 2,
       quarter: quarterId,
       activities: activities.map((activity) => ({
         title: activity.title,
         description: activity.description,
+        image: activity.imageData ?? '',
+        link: activity.linkUrl ?? '',
         status: activity.status,
         filters: {
-          time: activity.filterIds
+          timeframe: activity.filterIds
             .map((id) => filterMap.get(id))
             .filter((filter) => filter?.kind === 'time')
             .map((filter) => filter?.name),
-          world: activity.filterIds
+          categories: activity.filterIds
             .map((id) => filterMap.get(id))
             .filter((filter) => filter?.kind === 'world')
             .map((filter) => filter?.name),
@@ -358,6 +384,7 @@ export function ProjectsModule({
                   }}
                   onDelete={() => deleteProject(project.id)}
                   onToggleStep={(stepId) => toggleProjectStep(project.id, stepId)}
+                  onDeleteStep={(stepId) => deleteProjectStep(project.id, stepId)}
                 />
               ))}
             </div>
@@ -382,13 +409,13 @@ export function ProjectsModule({
             </div>
 
             <FilterChips
-              title="Zeit & Rahmen"
+              title="Zeitrahmen"
               filters={filters.filter((filter) => filter.kind === 'time')}
               selectedFilterIds={selectedFilterIds}
               onToggle={toggleFilter}
             />
             <FilterChips
-              title="Ideenwelten"
+              title="Kategorien"
               filters={filters.filter((filter) => filter.kind === 'world')}
               selectedFilterIds={selectedFilterIds}
               onToggle={toggleFilter}
@@ -399,9 +426,13 @@ export function ProjectsModule({
             <p className="card-label">Passende Sidequest</p>
             {currentIdea ? (
               <>
+                <ActivityImage activity={currentIdea} />
                 <h3>{currentIdea.title}</h3>
                 {currentIdea.description && <p>{currentIdea.description}</p>}
                 <ActivityFilterLabels activity={currentIdea} filters={filters} />
+                {currentIdea.linkUrl && (
+                  <ActivityLink url={currentIdea.linkUrl} />
+                )}
                 <div className="projects-idea-actions">
                   <button
                     type="button"
@@ -482,9 +513,11 @@ export function ProjectsModule({
                   <button type="button" aria-label="Aktivität löschen" onClick={() => deleteActivity(activity.id)}><Trash2 aria-hidden="true" /></button>
                 </div>
                 <p className="projects-status-label">{statusLabel(activity.status)}</p>
+                <ActivityImage activity={activity} />
                 <h4>{activity.title}</h4>
                 {activity.description && <p>{activity.description}</p>}
                 <ActivityFilterLabels activity={activity} filters={filters} />
+                {activity.linkUrl && <ActivityLink url={activity.linkUrl} />}
                 {activity.status !== 'available' && (
                   <button type="button" className="projects-text-button" onClick={() => changeActivityStatus(activity.id, 'available')}>
                     Wieder verfügbar machen <ChevronRight aria-hidden="true" />
@@ -565,13 +598,18 @@ function ProjectCard({
   onEdit,
   onDelete,
   onToggleStep,
+  onDeleteStep,
 }: {
   project: Project
   onEdit: () => void
   onDelete: () => void
   onToggleStep: (stepId: string) => void
+  onDeleteStep: (stepId: string) => void
 }) {
   const completedSteps = project.steps.filter((step) => step.completed).length
+  const progress = project.steps.length > 0
+    ? Math.round((completedSteps / project.steps.length) * 100)
+    : 0
   return (
     <article className="projects-project-card">
       <div className="projects-card-actions">
@@ -585,25 +623,79 @@ function ProjectCard({
       </p>
       <h4>{project.title}</h4>
       {project.description && <p>{project.description}</p>}
+      {project.steps.length > 0 && (
+        <div
+          className="projects-progress"
+          role="progressbar"
+          aria-label="Fortschritt"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+        >
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      )}
       {project.nextStep && (
         <div className="projects-next-step"><strong>Nächster kleiner Schritt</strong><span>{project.nextStep}</span></div>
       )}
       {project.steps.length > 0 && (
         <div className="projects-steps">
           {project.steps.map((step) => (
-            <button
-              type="button"
-              key={step.id}
-              className={step.completed ? 'completed' : ''}
-              onClick={() => onToggleStep(step.id)}
-            >
-              <span className="projects-check">{step.completed && <Check aria-hidden="true" />}</span>
-              {step.title}
-            </button>
+            <div className="projects-step-row" key={step.id}>
+              <button
+                type="button"
+                className={`projects-step-toggle${step.completed ? ' completed' : ''}`}
+                onClick={() => onToggleStep(step.id)}
+              >
+                <span className="projects-check">{step.completed && <Check aria-hidden="true" />}</span>
+                <span>{step.title}</span>
+              </button>
+              <button
+                type="button"
+                className="projects-step-delete"
+                aria-label={`Schritt „${step.title}“ löschen`}
+                onClick={() => onDeleteStep(step.id)}
+              >
+                <Trash2 aria-hidden="true" />
+              </button>
+            </div>
           ))}
         </div>
       )}
     </article>
+  )
+}
+
+function ActivityImage({ activity }: { activity: ProjectActivity }) {
+  const imageSource = safeImageSource(activity.imageData ?? activity.imageUrl)
+  if (!imageSource) return null
+
+  return (
+    <img
+      className="projects-activity-image"
+      src={imageSource}
+      alt={activity.title}
+      loading="lazy"
+      onError={(event) => {
+        event.currentTarget.hidden = true
+      }}
+    />
+  )
+}
+
+function ActivityLink({ url }: { url: string }) {
+  const safeUrl = safeHttpUrl(url)
+  if (!safeUrl) return null
+
+  return (
+    <a
+      className="projects-activity-link"
+      href={safeUrl}
+      target="_blank"
+      rel="noreferrer noopener"
+    >
+      Link öffnen <ExternalLink aria-hidden="true" />
+    </a>
   )
 }
 
@@ -752,6 +844,9 @@ function ActivityEditor({
 }) {
   const [title, setTitle] = useState(activity?.title ?? '')
   const [description, setDescription] = useState(activity?.description ?? '')
+  const [imageData, setImageData] = useState(activity?.imageData ?? activity?.imageUrl ?? '')
+  const [imageError, setImageError] = useState('')
+  const [linkUrl, setLinkUrl] = useState(activity?.linkUrl ?? '')
   const [filterIds, setFilterIds] = useState<string[]>(activity?.filterIds ?? [])
 
   function toggle(filterId: string) {
@@ -772,6 +867,9 @@ function ActivityEditor({
       quarterId,
       title: cleanTitle,
       description: description.trim(),
+      imageData: imageData || undefined,
+      imageUrl: undefined,
+      linkUrl: linkUrl.trim() || undefined,
       filterIds,
       status: activity?.status ?? 'available',
       createdAt: activity?.createdAt ?? now,
@@ -780,14 +878,47 @@ function ActivityEditor({
     })
   }
 
+  async function selectImage(file?: File) {
+    if (!file) return
+    setImageError('')
+    try {
+      setImageData(await prepareLocalImage(file))
+    } catch (error) {
+      setImageError(
+        error instanceof Error
+          ? error.message
+          : 'Das Bild konnte nicht verarbeitet werden.',
+      )
+    }
+  }
+
   return (
     <Dialog title={activity ? 'Aktivität bearbeiten' : 'Aktivität anlegen'} eyebrow={quarterLabel} onClose={onClose}>
       <form className="projects-form" onSubmit={submit}>
         <label className="form-field"><span>Titel</span><input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Titel der Aktivität" autoFocus required /></label>
         <label className="form-field"><span>Beschreibung – optional</span><textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Beschreibung, Ort oder Notiz" rows={3} /></label>
+        <div className="projects-image-editor">
+          <span>Bild – optional</span>
+          {safeImageSource(imageData) && <img src={safeImageSource(imageData)} alt="Vorschau" />}
+          <div className="projects-image-actions">
+            <label className="projects-soft-button">
+              <Upload aria-hidden="true" />
+              {imageData ? 'Bild ersetzen' : 'Bild auswählen'}
+              <input type="file" accept="image/*" onChange={(event) => selectImage(event.target.files?.[0])} />
+            </label>
+            {imageData && (
+              <button type="button" className="projects-secondary-button" onClick={() => { setImageData(''); setImageError('') }}>
+                <Trash2 aria-hidden="true" /> Bild entfernen
+              </button>
+            )}
+          </div>
+          <small>Das Bild wird verkleinert und nur in diesem Browser gespeichert.</small>
+          {imageError && <p className="projects-error" role="alert">{imageError}</p>}
+        </div>
+        <label className="form-field"><span>Link – optional</span><input type="url" value={linkUrl} onChange={(event) => setLinkUrl(event.target.value)} placeholder="https://…" /></label>
         {(['time', 'world'] as ProjectFilterKind[]).map((kind) => (
           <fieldset className="projects-filter-picker" key={kind}>
-            <legend>{kind === 'time' ? 'Zeit & Rahmen' : 'Ideenwelten'}</legend>
+            <legend>{kind === 'time' ? 'Zeitrahmen' : 'Kategorien'}</legend>
             <div className="projects-filter-chips">
               {filters.filter((filter) => filter.kind === kind).map((filter) => (
                 <button type="button" key={filter.id} className={filterIds.includes(filter.id) ? 'active' : ''} aria-pressed={filterIds.includes(filter.id)} onClick={() => toggle(filter.id)}>{filter.name}</button>
@@ -823,7 +954,7 @@ function FilterManager({
       <div className="projects-filter-manager">
         {(['time', 'world'] as ProjectFilterKind[]).map((kind) => (
           <section key={kind}>
-            <h3>{kind === 'time' ? 'Zeit & Rahmen' : 'Ideenwelten'}</h3>
+            <h3>{kind === 'time' ? 'Zeitrahmen' : 'Kategorien'}</h3>
             <div className="projects-filter-rows">
               {filters.filter((filter) => filter.kind === kind).map((filter) => (
                 <FilterRow key={filter.id} filter={filter} onRename={onRename} onDelete={onDelete} />
@@ -853,14 +984,15 @@ function FilterRow({ filter, onRename, onDelete }: { filter: ProjectFilter; onRe
 
 function JsonHelp({ onClose }: { onClose: () => void }) {
   const example = `{
-  "version": 1,
+  "version": 2,
   "activities": [
     {
       "title": "Titel der Aktivität",
       "description": "Optionaler Text",
+      "link": "https://example.com/weitere-infos",
       "filters": {
-        "time": ["Ganztägig"],
-        "world": ["Eigene Ideenwelt"]
+        "timeframe": ["Ganztägig"],
+        "categories": ["Eigene Kategorie"]
       }
     }
   ]
@@ -870,7 +1002,8 @@ function JsonHelp({ onClose }: { onClose: () => void }) {
       <div className="projects-json-help">
         <p>Du kannst beliebig viele Aktivitäten in das Array <code>activities</code> schreiben. Noch unbekannte Filternamen werden beim Import nach deiner Bestätigung automatisch angelegt.</p>
         <pre><code>{example}</code></pre>
-        <p>Erlaubte Filtergruppen sind <code>time</code> und <code>world</code>. Titel ist erforderlich; Beschreibung und Filter sind optional.</p>
+        <p><code>title</code> ist erforderlich. <code>description</code>, <code>link</code> und alle Filter sind optional. Unter <code>timeframe</code> und <code>categories</code> kannst du jeweils mehrere Werte eintragen.</p>
+        <p>Bilder wählst du nach dem Import beim Bearbeiten der Aktivität direkt vom Handy oder PC aus. Beim späteren Export werden sie automatisch in die JSON-Datei eingebettet und beim erneuten Import wiederhergestellt.</p>
         <div className="projects-form-actions"><button type="button" className="projects-primary-button" onClick={onClose}>Verstanden</button></div>
       </div>
     </Dialog>
@@ -921,6 +1054,85 @@ function statusLabel(status: ActivityStatus) {
   return 'Verfügbar'
 }
 
+function safeHttpUrl(value?: string) {
+  if (!value) return undefined
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+      ? url.toString()
+      : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function safeImageSource(value?: string) {
+  if (!value) return undefined
+  if (value.startsWith('data:image/')) return value
+  return safeHttpUrl(value)
+}
+
+async function prepareLocalImage(file: File) {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Bitte wähle eine Bilddatei aus.')
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    throw new Error('Das Bild ist größer als 20 MB. Bitte wähle eine kleinere Datei.')
+  }
+
+  const objectUrl = URL.createObjectURL(file)
+  try {
+    const image = await loadImage(objectUrl)
+    const longestSide = Math.max(image.naturalWidth, image.naturalHeight)
+    const scale = Math.min(1, 1200 / longestSide)
+    const width = Math.max(1, Math.round(image.naturalWidth * scale))
+    const height = Math.max(1, Math.round(image.naturalHeight * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error('Das Bild konnte nicht verarbeitet werden.')
+    context.drawImage(image, 0, 0, width, height)
+
+    const blob = await canvasToBlob(canvas, 'image/webp', 0.72)
+    return await blobToDataUrl(blob)
+  } finally {
+    URL.revokeObjectURL(objectUrl)
+  }
+}
+
+function loadImage(source: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('Das Bild konnte nicht geöffnet werden.'))
+    image.src = source
+  })
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => blob
+        ? resolve(blob)
+        : reject(new Error('Das Bild konnte nicht gespeichert werden.')),
+      type,
+      quality,
+    )
+  })
+}
+
+function blobToDataUrl(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => typeof reader.result === 'string'
+      ? resolve(reader.result)
+      : reject(new Error('Das Bild konnte nicht gelesen werden.'))
+    reader.onerror = () => reject(new Error('Das Bild konnte nicht gelesen werden.'))
+    reader.readAsDataURL(blob)
+  })
+}
+
 function parseImport(source: string, existingFilters: ProjectFilter[]): ImportPreview {
   const parsed: unknown = JSON.parse(source)
   const records = Array.isArray(parsed)
@@ -935,9 +1147,24 @@ function parseImport(source: string, existingFilters: ProjectFilter[]): ImportPr
     const item = record as Record<string, unknown>
     if (typeof item.title !== 'string' || !item.title.trim()) { skipped += 1; continue }
     const filterObject = item.filters && typeof item.filters === 'object' ? item.filters as Record<string, unknown> : {}
-    const getNames = (kind: ProjectFilterKind) => Array.isArray(filterObject[kind]) ? [...new Set((filterObject[kind] as unknown[]).filter((name): name is string => typeof name === 'string').map((name) => name.trim()).filter(Boolean))] : []
+    const getFilterValues = (...keys: string[]) => {
+      const value = keys.map((key) => filterObject[key] ?? item[key]).find(Array.isArray)
+      return Array.isArray(value)
+        ? [...new Set(value.filter((name): name is string => typeof name === 'string').map((name) => name.trim()).filter(Boolean))]
+        : []
+    }
     const status: ActivityStatus = item.status === 'saved' || item.status === 'done' ? item.status : 'available'
-    activities.push({ title: item.title.trim(), description: typeof item.description === 'string' ? item.description.trim() : '', status, filters: { time: getNames('time'), world: getNames('world') } })
+    activities.push({
+      title: item.title.trim(),
+      description: typeof item.description === 'string' ? item.description.trim() : '',
+      imageData: typeof item.image === 'string' && item.image.startsWith('data:image/') ? item.image : '',
+      linkUrl: typeof item.link === 'string' ? item.link.trim() : typeof item.linkUrl === 'string' ? item.linkUrl.trim() : '',
+      status,
+      filters: {
+        time: getFilterValues('timeframe', 'time'),
+        world: getFilterValues('categories', 'category', 'world'),
+      },
+    })
   }
   const newFilterNames = (['time', 'world'] as ProjectFilterKind[]).reduce<Record<ProjectFilterKind, string[]>>((result, kind) => {
     result[kind] = [...new Set(activities.flatMap((activity) => activity.filters[kind]))].filter((name) => !existingFilters.some((filter) => filter.kind === kind && filter.name.toLocaleLowerCase() === name.toLocaleLowerCase()))
@@ -954,7 +1181,8 @@ function importActivities(data: ProjectsData, quarterId: QuarterId, preview: Imp
   const quarterFilters = filters.filter((filter) => filter.quarterId === quarterId)
   const now = new Date().toISOString()
   const activities = preview.activities.map<ProjectActivity>((activity) => ({
-    id: crypto.randomUUID(), quarterId, title: activity.title, description: activity.description, status: activity.status,
+    id: crypto.randomUUID(), quarterId, title: activity.title, description: activity.description,
+    imageData: activity.imageData || undefined, linkUrl: activity.linkUrl || undefined, status: activity.status,
     filterIds: (['time', 'world'] as ProjectFilterKind[]).flatMap((kind) => activity.filters[kind].map((name) => quarterFilters.find((filter) => filter.kind === kind && filter.name.toLocaleLowerCase() === name.toLocaleLowerCase())?.id).filter((id): id is string => Boolean(id))),
     createdAt: now, updatedAt: now, completedAt: activity.status === 'done' ? now : undefined,
   }))

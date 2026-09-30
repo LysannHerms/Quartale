@@ -229,7 +229,14 @@
   gap: 2px;
 }
 
-.projects-steps > button {
+.projects-step-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 6px;
+}
+
+.projects-step-toggle {
   min-height: 38px;
   padding: 6px 0;
   display: flex;
@@ -242,9 +249,31 @@
   cursor: pointer;
 }
 
-.projects-steps > button.completed {
+.projects-step-toggle.completed {
   color: var(--muted);
   text-decoration: line-through;
+}
+
+.projects-step-delete {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.projects-step-delete:hover {
+  color: var(--text);
+  background: rgb(255 255 255 / 7%);
+}
+
+.projects-step-delete svg {
+  width: 15px;
+  height: 15px;
 }
 
 .projects-check {
@@ -257,10 +286,28 @@
   border-radius: 7px;
 }
 
-.projects-steps > button.completed .projects-check {
+.projects-step-toggle.completed .projects-check {
   color: var(--button-text);
   border-color: var(--accent);
   background: var(--accent);
+}
+
+.projects-progress {
+  width: 100%;
+  height: 5px;
+  margin: 14px 0 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
+}
+
+.projects-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: width 180ms ease;
 }
 
 .projects-check svg {
@@ -301,6 +348,79 @@
   border: 1px solid var(--glass-border);
   border-radius: 999px;
   background: rgb(255 255 255 / 5%);
+}
+
+.projects-activity-image {
+  width: 100%;
+  max-height: 220px;
+  margin: 8px 0 14px;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.projects-activity-link {
+  width: fit-content;
+  margin-top: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.projects-activity-link:hover {
+  text-decoration: underline;
+}
+
+.projects-activity-link svg {
+  width: 15px;
+  height: 15px;
+}
+
+.projects-image-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.projects-image-editor > span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.projects-image-editor > img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.projects-image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.projects-image-actions label {
+  cursor: pointer;
+}
+
+.projects-image-actions input {
+  display: none;
+}
+
+.projects-image-editor small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.projects-image-editor .projects-error {
+  margin: 0;
 }
 
 .projects-filter-chips button {
