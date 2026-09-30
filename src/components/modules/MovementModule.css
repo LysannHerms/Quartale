@@ -519,7 +519,7 @@ body:has(.movement-modal-backdrop) {
   color: var(--text);
   border: 1px solid var(--glass-border);
   border-radius: 31px;
-  background: var(--glass-strong);
+  background: color-mix(in srgb, var(--background) 20%, transparent);
   box-shadow: 0 30px 100px rgb(0 0 0 / 58%);
   scrollbar-width: none;
   -ms-overflow-style: none;

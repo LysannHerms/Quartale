@@ -257,14 +257,15 @@
 
 .logbook-entry-actions button,
 .logbook-close-button {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: grid;
+  flex: 0 0 auto;
   place-items: center;
-  color: var(--muted);
+  color: var(--text);
   border: 1px solid var(--glass-border);
   border-radius: 50%;
-  background: rgb(255 255 255 / 5%);
+  background: rgb(255 255 255 / 6%);
   cursor: pointer;
 }
 
@@ -321,7 +322,7 @@
   color: var(--text);
   border: 1px solid var(--glass-border);
   border-radius: 30px;
-  background: var(--glass-strong);
+  background: color-mix(in srgb, var(--background) 20%, transparent);
   box-shadow: 0 30px 90px rgb(0 0 0 / 42%);
   scrollbar-width: none;
   backdrop-filter: blur(34px) saturate(150%);

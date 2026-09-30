@@ -15,12 +15,14 @@ export type Timing = 'open' | 'flexible' | 'fixed'
 
 export type CalendarKind = 'todo' | 'event'
 export type CalendarPeriod = 'day' | 'week' | 'month'
-export type CalendarTag =
-  | 'todo'
-  | 'movement'
-  | 'internship'
-  | 'leisure'
-  | 'university'
+export type CalendarTag = string
+
+export type CalendarTagDefinition = {
+  id: string
+  quarterId: QuarterId
+  name: string
+  color: string
+}
 
 export type Entry = {
   id: string

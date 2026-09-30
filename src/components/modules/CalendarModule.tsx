@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Check,
@@ -7,6 +8,7 @@ import {
   Circle,
   Pencil,
   Plus,
+  Tags,
   Trash2,
   X,
 } from 'lucide-react'
@@ -16,7 +18,9 @@ import type {
   CalendarKind,
   CalendarPeriod,
   CalendarTag,
+  CalendarTagDefinition,
   Entry,
+  QuarterId,
 } from '../../types'
 import {
   addDays,
@@ -48,7 +52,7 @@ type CalendarItem = {
   title: string
   details: string
   date: string
-  tag: CalendarTag | 'bingo'
+  tag?: CalendarTag | 'bingo'
   kind: CalendarKind
   period: CalendarPeriod
   completed: boolean
@@ -56,12 +60,15 @@ type CalendarItem = {
   editable: boolean
 }
 
-const calendarTags: Array<{ id: CalendarTag; label: string }> = [
-  { id: 'todo', label: 'To-do' },
-  { id: 'movement', label: 'Bewegung' },
-  { id: 'internship', label: 'Praktikum' },
-  { id: 'leisure', label: 'Freizeit' },
-  { id: 'university', label: 'Uni' },
+const CALENDAR_TAG_STORAGE_PREFIX = 'quartale-calendar-tags-v1'
+const BINGO_COLOR = '#b63a56'
+const TAG_COLORS = [
+  '#8e3d55',
+  '#356859',
+  '#b56b35',
+  '#4f6296',
+  '#77604b',
+  '#6f577f',
 ]
 
 const viewLabels: Record<CalendarView, string> = {
@@ -104,6 +111,22 @@ export function CalendarModule({
   const [calendarView, setCalendarView] = useState<CalendarView>('month')
   const [todoRange, setTodoRange] = useState<TodoRange>('week')
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null)
+  const [isTagManagerOpen, setIsTagManagerOpen] = useState(false)
+  const [tagsByQuarter, setTagsByQuarter] = useState<
+    Partial<Record<QuarterId, CalendarTagDefinition[]>>
+  >(() => loadAllCalendarTags())
+
+  const storedCalendarTags = tagsByQuarter[quarter.id] ?? []
+  const calendarTags = useMemo(() => {
+    const knownIds = new Set(storedCalendarTags.map((tag) => tag.id))
+    const referencedTags = entries
+      .map((entry) => entry.calendarTag)
+      .filter((tagId): tagId is string => Boolean(tagId) && !knownIds.has(tagId!))
+      .filter((tagId, index, all) => all.indexOf(tagId) === index)
+      .map((tagId) => createLegacyTagDefinition(tagId, quarter.id))
+
+    return [...storedCalendarTags, ...referencedTags]
+  }, [entries, quarter.id, storedCalendarTags])
 
   const items = useMemo(
     () => createCalendarItems(entries, bingoBoard),
@@ -141,6 +164,19 @@ export function CalendarModule({
       onAdd(entry)
     }
     closeForm()
+  }
+
+  function saveCalendarTags(nextTags: CalendarTagDefinition[]) {
+    setTagsByQuarter((current) => ({ ...current, [quarter.id]: nextTags }))
+    persistCalendarTags(quarter.id, nextTags)
+  }
+
+  function deleteCalendarTag(tagId: string) {
+    entries
+      .filter((entry) => entry.calendarTag === tagId)
+      .forEach((entry) => onUpdate({ ...entry, calendarTag: undefined }))
+
+    saveCalendarTags(calendarTags.filter((tag) => tag.id !== tagId))
   }
 
   function toggleTodo(item: CalendarItem) {
@@ -224,7 +260,11 @@ export function CalendarModule({
                   <span>{formatDay(day).split(',')[1]}</span>
                   <div className="calendar-week-items">
                     {dayItems.slice(0, 3).map((item) => (
-                      <span className={`calendar-week-item tag-${item.tag}`} key={item.id}>
+                      <span
+                        className="calendar-week-item"
+                        key={item.id}
+                        style={getTagStyle(item.tag, calendarTags)}
+                      >
                         <i />
                         {item.title}
                       </span>
@@ -271,7 +311,10 @@ export function CalendarModule({
                   <div>
                     <strong>{item.title}</strong>
                     <span>
-                      <i className={`calendar-dot tag-${item.tag}`} />
+                      <i
+                        className="calendar-dot"
+                        style={getTagStyle(item.tag, calendarTags)}
+                      />
                       {item.sourceLabel}
                     </span>
                   </div>
@@ -330,6 +373,7 @@ export function CalendarModule({
           <DayView
             date={selectedDate}
             items={items}
+            tags={calendarTags}
             onEdit={editItem}
             onDelete={onDelete}
             onToggle={toggleTodo}
@@ -340,6 +384,7 @@ export function CalendarModule({
           <WeekView
             date={selectedDate}
             items={items}
+            tags={calendarTags}
             onSelectDate={setSelectedDate}
           />
         )}
@@ -348,6 +393,7 @@ export function CalendarModule({
           <MonthView
             date={selectedDate}
             items={items}
+            tags={calendarTags}
             onSelectDate={(date) => {
               setSelectedDate(date)
               setCalendarView('day')
@@ -359,6 +405,7 @@ export function CalendarModule({
           <QuarterView
             quarterStart={quarter.start}
             items={items}
+            tags={calendarTags}
             onSelectDate={(date) => {
               setSelectedDate(date)
               setCalendarView('day')
@@ -366,14 +413,24 @@ export function CalendarModule({
           />
         )}
 
-        <div className="calendar-legend">
-          {calendarTags.map((tag) => (
-            <span key={tag.id}>
-              <i className={`calendar-dot tag-${tag.id}`} />
-              {tag.label}
-            </span>
-          ))}
-          <span><i className="calendar-dot tag-bingo" />Bingo</span>
+        <div className="calendar-legend-row">
+          <div className="calendar-legend">
+            {calendarTags.map((tag) => (
+              <span key={tag.id}>
+                <i className="calendar-dot" style={getTagStyle(tag.id, calendarTags)} />
+                {tag.name}
+              </span>
+            ))}
+            <span><i className="calendar-dot" style={getTagStyle('bingo', calendarTags)} />Bingo</span>
+          </div>
+          <button
+            type="button"
+            className="calendar-manage-tags-button"
+            onClick={() => setIsTagManagerOpen(true)}
+          >
+            <Pencil aria-hidden="true" />
+            Tags verwalten
+          </button>
         </div>
       </section>
 
@@ -381,10 +438,23 @@ export function CalendarModule({
         createPortal(
           <CalendarEntryForm
             quarter={quarter}
+            tags={calendarTags}
             initialEntry={editingEntry ?? undefined}
             initialDate={toDateKey(selectedDate)}
             onClose={closeForm}
             onSave={saveCalendarEntry}
+          />,
+          document.querySelector('.app') ?? document.body,
+        )}
+
+      {isTagManagerOpen &&
+        createPortal(
+          <CalendarTagManager
+            quarterId={quarter.id}
+            tags={calendarTags}
+            onChange={saveCalendarTags}
+            onDelete={deleteCalendarTag}
+            onClose={() => setIsTagManagerOpen(false)}
           />,
           document.querySelector('.app') ?? document.body,
         )}
@@ -395,12 +465,14 @@ export function CalendarModule({
 function DayView({
   date,
   items,
+  tags,
   onEdit,
   onDelete,
   onToggle,
 }: {
   date: Date
   items: CalendarItem[]
+  tags: CalendarTagDefinition[]
   onEdit: (item: CalendarItem) => void
   onDelete: (entryId: string) => void
   onToggle: (item: CalendarItem) => void
@@ -415,8 +487,12 @@ function DayView({
       ) : (
         <div className="calendar-day-list">
           {dayItems.map((item) => (
-            <article className={`calendar-day-item tag-${item.tag}`} key={item.id}>
-              <i className={`calendar-dot tag-${item.tag}`} />
+            <article
+              className="calendar-day-item"
+              key={item.id}
+              style={getTagStyle(item.tag, tags)}
+            >
+              <i className="calendar-dot" />
               <div>
                 <strong className={item.completed ? 'completed' : ''}>{item.title}</strong>
                 <span>{item.sourceLabel}{item.details ? ` · ${item.details}` : ''}</span>
@@ -447,10 +523,12 @@ function DayView({
 function WeekView({
   date,
   items,
+  tags,
   onSelectDate,
 }: {
   date: Date
   items: CalendarItem[]
+  tags: CalendarTagDefinition[]
   onSelectDate: (date: Date) => void
 }) {
   const firstDay = startOfWeek(date)
@@ -464,7 +542,13 @@ function WeekView({
             <strong>{formatDay(day)}</strong>
             <span>{dayItems.length ? `${dayItems.length} Einträge` : 'frei'}</span>
             <div className="calendar-dots">
-              {dayItems.map((item) => <i className={`calendar-dot tag-${item.tag}`} key={item.id} />)}
+              {dayItems.map((item) => (
+                <i
+                  className="calendar-dot"
+                  key={item.id}
+                  style={getTagStyle(item.tag, tags)}
+                />
+              ))}
             </div>
           </button>
         )
@@ -476,10 +560,12 @@ function WeekView({
 function MonthView({
   date,
   items,
+  tags,
   onSelectDate,
 }: {
   date: Date
   items: CalendarItem[]
+  tags: CalendarTagDefinition[]
   onSelectDate: (date: Date) => void
 }) {
   return (
@@ -499,7 +585,13 @@ function MonthView({
             >
               <span>{day.getDate()}</span>
               <div className="calendar-dots">
-                {dayItems.slice(0, 5).map((item) => <i className={`calendar-dot tag-${item.tag}`} key={item.id} />)}
+                {dayItems.slice(0, 5).map((item) => (
+                  <i
+                    className="calendar-dot"
+                    key={item.id}
+                    style={getTagStyle(item.tag, tags)}
+                  />
+                ))}
               </div>
             </button>
           )
@@ -512,10 +604,12 @@ function MonthView({
 function QuarterView({
   quarterStart,
   items,
+  tags,
   onSelectDate,
 }: {
   quarterStart: string
   items: CalendarItem[]
+  tags: CalendarTagDefinition[]
   onSelectDate: (date: Date) => void
 }) {
   const start = getQuarterStart(quarterStart)
@@ -538,7 +632,12 @@ function QuarterView({
                     onClick={() => onSelectDate(day)}
                   >
                     <span>{day.getDate()}</span>
-                    {dayItems.length > 0 && <i className={`calendar-dot tag-${dayItems[0].tag}`} />}
+                    {dayItems.length > 0 && (
+                      <i
+                        className="calendar-dot"
+                        style={getTagStyle(dayItems[0].tag, tags)}
+                      />
+                    )}
                   </button>
                 )
               })}
@@ -552,12 +651,14 @@ function QuarterView({
 
 function CalendarEntryForm({
   quarter,
+  tags,
   initialEntry,
   initialDate,
   onClose,
   onSave,
 }: {
   quarter: Quarter
+  tags: CalendarTagDefinition[]
   initialEntry?: Entry
   initialDate: string
   onClose: () => void
@@ -567,7 +668,7 @@ function CalendarEntryForm({
   const [kind, setKind] = useState<CalendarKind>(initialEntry?.calendarKind ?? 'todo')
   const [period, setPeriod] = useState<CalendarPeriod>(initialEntry?.calendarPeriod ?? 'day')
   const [date, setDate] = useState(initialEntry?.date ?? initialDate)
-  const [tag, setTag] = useState<CalendarTag>(initialEntry?.calendarTag ?? 'todo')
+  const [tag, setTag] = useState<CalendarTag | ''>(initialEntry?.calendarTag ?? '')
   const [details, setDetails] = useState(initialEntry?.details ?? '')
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -583,7 +684,7 @@ function CalendarEntryForm({
       timing: 'fixed',
       date,
       calendarKind: kind,
-      calendarTag: tag,
+      calendarTag: tag || undefined,
       calendarPeriod: kind === 'event' ? 'day' : period,
       completed: initialEntry?.completed ?? false,
       createdAt: initialEntry?.createdAt ?? new Date().toISOString(),
@@ -634,15 +735,33 @@ function CalendarEntryForm({
           </label>
 
           <div className="calendar-form-choice calendar-tag-choice">
-            <span>Tag</span>
+            <span>Tag – optional</span>
             <div>
-              {calendarTags.map((option) => (
-                <button type="button" key={option.id} className={`${tag === option.id ? 'active' : ''} tag-${option.id}`} onClick={() => setTag(option.id)}>
-                  <i className={`calendar-dot tag-${option.id}`} />
-                  {option.label}
+              <button
+                type="button"
+                className={tag === '' ? 'active' : ''}
+                onClick={() => setTag('')}
+              >
+                Ohne Tag
+              </button>
+              {tags.map((option) => (
+                <button
+                  type="button"
+                  key={option.id}
+                  className={tag === option.id ? 'active' : ''}
+                  style={getTagStyle(option.id, tags)}
+                  onClick={() => setTag(option.id)}
+                >
+                  <i className="calendar-dot" />
+                  {option.name}
                 </button>
               ))}
             </div>
+            {tags.length === 0 && (
+              <small className="calendar-tag-hint">
+                Für dieses Quartal sind noch keine Tags angelegt.
+              </small>
+            )}
           </div>
 
           <label className="form-field">
@@ -660,6 +779,158 @@ function CalendarEntryForm({
   )
 }
 
+function CalendarTagManager({
+  quarterId,
+  tags,
+  onChange,
+  onDelete,
+  onClose,
+}: {
+  quarterId: QuarterId
+  tags: CalendarTagDefinition[]
+  onChange: (tags: CalendarTagDefinition[]) => void
+  onDelete: (tagId: string) => void
+  onClose: () => void
+}) {
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [name, setName] = useState('')
+  const [color, setColor] = useState(TAG_COLORS[tags.length % TAG_COLORS.length])
+  const [error, setError] = useState('')
+
+  function resetForm() {
+    setEditingId(null)
+    setName('')
+    setColor(TAG_COLORS[tags.length % TAG_COLORS.length])
+    setError('')
+  }
+
+  function startEditing(tag: CalendarTagDefinition) {
+    setEditingId(tag.id)
+    setName(tag.name)
+    setColor(tag.color)
+    setError('')
+  }
+
+  function saveTag(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const cleanName = name.trim()
+    if (!cleanName) return
+
+    const duplicate = tags.some(
+      (tag) => tag.id !== editingId && tag.name.toLocaleLowerCase() === cleanName.toLocaleLowerCase(),
+    )
+    if (duplicate) {
+      setError('Diesen Tag gibt es bereits.')
+      return
+    }
+
+    if (editingId) {
+      onChange(
+        tags.map((tag) =>
+          tag.id === editingId ? { ...tag, name: cleanName, color } : tag,
+        ),
+      )
+    } else {
+      onChange([
+        ...tags,
+        {
+          id: `calendar-tag-${crypto.randomUUID()}`,
+          quarterId,
+          name: cleanName,
+          color,
+        },
+      ])
+    }
+
+    resetForm()
+  }
+
+  function removeTag(tag: CalendarTagDefinition) {
+    if (!window.confirm(`Tag „${tag.name}“ wirklich löschen? Die Kalendereinträge bleiben erhalten.`)) {
+      return
+    }
+    onDelete(tag.id)
+    if (editingId === tag.id) resetForm()
+  }
+
+  return (
+    <div className="modal-backdrop" onMouseDown={onClose}>
+      <section
+        className="entry-dialog calendar-tag-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="calendar-tag-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="dialog-header">
+          <div>
+            <p className="eyebrow">Dieses Quartal</p>
+            <h2 id="calendar-tag-title">Tags verwalten</h2>
+          </div>
+          <button type="button" className="close-button" aria-label="Schließen" onClick={onClose}>
+            <X aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="calendar-tag-manager-body">
+          {tags.length === 0 ? (
+            <p className="calendar-empty-text">
+              Noch keine Tags angelegt. Kalendereinträge funktionieren auch ohne Tags.
+            </p>
+          ) : (
+            <div className="calendar-tag-manager-list">
+              {tags.map((tag) => (
+                <article key={tag.id} style={getTagStyle(tag.id, tags)}>
+                  <span><i className="calendar-dot" />{tag.name}</span>
+                  <div>
+                    <button type="button" aria-label={`${tag.name} bearbeiten`} onClick={() => startEditing(tag)}>
+                      <Pencil aria-hidden="true" />
+                    </button>
+                    <button type="button" aria-label={`${tag.name} löschen`} onClick={() => removeTag(tag)}>
+                      <Trash2 aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <form className="calendar-tag-editor" onSubmit={saveTag}>
+            <div className="calendar-tag-editor-heading">
+              <Tags aria-hidden="true" />
+              <strong>{editingId ? 'Tag bearbeiten' : 'Neuen Tag anlegen'}</strong>
+            </div>
+            <label className="form-field">
+              <span>Name</span>
+              <input
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value)
+                  setError('')
+                }}
+                placeholder="Zum Beispiel Arbeit, Sport oder Familie"
+                maxLength={32}
+              />
+            </label>
+            <label className="calendar-tag-color-field">
+              <span>Farbe</span>
+              <input type="color" value={color} onChange={(event) => setColor(event.target.value)} />
+              <i className="calendar-dot" style={{ '--calendar-tag-color': color } as CSSProperties} />
+            </label>
+            {error && <p className="calendar-tag-error" role="alert">{error}</p>}
+            <div className="calendar-tag-editor-actions">
+              {editingId && <button type="button" className="secondary-button" onClick={resetForm}>Abbrechen</button>}
+              <button type="submit" className="save-button" disabled={!name.trim()}>
+                {editingId ? 'Änderungen speichern' : 'Tag hinzufügen'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  )
+}
+
 function createCalendarItems(entries: Entry[], bingoBoard?: BingoBoard): CalendarItem[] {
   const entryItems = entries
     .filter((entry): entry is Entry & { date: string } => Boolean(entry.date))
@@ -669,7 +940,7 @@ function createCalendarItems(entries: Entry[], bingoBoard?: BingoBoard): Calenda
       title: entry.title,
       details: entry.details,
       date: entry.date,
-      tag: entry.calendarTag ?? getDefaultTag(entry),
+      tag: entry.calendarTag,
       kind: entry.calendarKind ?? getDefaultKind(entry),
       period: entry.calendarPeriod ?? 'day',
       completed: entry.completed ?? false,
@@ -696,13 +967,6 @@ function createCalendarItems(entries: Entry[], bingoBoard?: BingoBoard): Calenda
   return [...entryItems, ...bingoItems]
 }
 
-function getDefaultTag(entry: Entry): CalendarTag {
-  if (entry.moduleId === 'movement') return 'movement'
-  if (entry.moduleId === 'projects') return 'todo'
-  if (entry.moduleId === 'logbook') return 'leisure'
-  return 'todo'
-}
-
 function getDefaultKind(entry: Entry): CalendarKind {
   return entry.moduleId === 'projects' || entry.moduleId === 'notes' ? 'todo' : 'event'
 }
@@ -723,4 +987,80 @@ function getCalendarHeading(view: CalendarView, date: Date, quarterLabel: string
   if (view === 'week') return formatShortRange(startOfWeek(date), endOfWeek(date))
   if (view === 'month') return formatMonth(date)
   return quarterLabel
+}
+
+function getTagStyle(
+  tagId: CalendarTag | 'bingo' | undefined,
+  tags: CalendarTagDefinition[],
+): CSSProperties {
+  const color =
+    tagId === 'bingo'
+      ? BINGO_COLOR
+      : tags.find((tag) => tag.id === tagId)?.color ?? '#8a8781'
+
+  return { '--calendar-tag-color': color } as CSSProperties
+}
+
+function getCalendarTagStorageKey(quarterId: QuarterId) {
+  return `${CALENDAR_TAG_STORAGE_PREFIX}:${quarterId}`
+}
+
+function loadAllCalendarTags(): Partial<Record<QuarterId, CalendarTagDefinition[]>> {
+  if (typeof window === 'undefined') return {}
+
+  const result: Partial<Record<QuarterId, CalendarTagDefinition[]>> = {}
+  ;(['q1', 'q2', 'q3', 'q4'] as QuarterId[]).forEach((quarterId) => {
+    try {
+      const stored = window.localStorage.getItem(getCalendarTagStorageKey(quarterId))
+      if (!stored) return
+      const parsed = JSON.parse(stored) as unknown
+      if (!Array.isArray(parsed)) return
+
+      result[quarterId] = parsed.filter(isCalendarTagDefinition)
+    } catch {
+      // Ungültige oder nicht verfügbare lokale Daten blockieren den Kalender nicht.
+    }
+  })
+
+  return result
+}
+
+function persistCalendarTags(quarterId: QuarterId, tags: CalendarTagDefinition[]) {
+  try {
+    window.localStorage.setItem(getCalendarTagStorageKey(quarterId), JSON.stringify(tags))
+  } catch {
+    // Der Kalender bleibt auch dann nutzbar, wenn lokaler Speicher blockiert ist.
+  }
+}
+
+function isCalendarTagDefinition(value: unknown): value is CalendarTagDefinition {
+  if (!value || typeof value !== 'object') return false
+  const candidate = value as Partial<CalendarTagDefinition>
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.quarterId === 'string' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.color === 'string'
+  )
+}
+
+function createLegacyTagDefinition(
+  tagId: string,
+  quarterId: QuarterId,
+): CalendarTagDefinition {
+  const legacyTags: Record<string, { name: string; color: string }> = {
+    todo: { name: 'To-do', color: '#8e3d89' },
+    movement: { name: 'Bewegung', color: '#357d78' },
+    internship: { name: 'Praktikum', color: '#427a4d' },
+    leisure: { name: 'Freizeit', color: '#405c9a' },
+    university: { name: 'Uni', color: '#b56b35' },
+  }
+  const legacy = legacyTags[tagId]
+
+  return {
+    id: tagId,
+    quarterId,
+    name: legacy?.name ?? tagId,
+    color: legacy?.color ?? TAG_COLORS[0],
+  }
 }

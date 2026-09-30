@@ -337,17 +337,9 @@
   box-shadow: 0 0 8px color-mix(in srgb, var(--calendar-tag-color) 40%, transparent);
 }
 
-.tag-todo { --calendar-tag-color: rgba(186, 58, 182, 0.267); }
-.tag-movement { --calendar-tag-color: rgba(58, 186, 182, 0.267); }
-.tag-internship { --calendar-tag-color: rgba(58, 186, 77, 0.267); }
-.tag-leisure { --calendar-tag-color: rgba(25, 50, 119, 0.267); }
-.tag-university { --calendar-tag-color: rgba(225, 145, 53, 0.267); }
-.tag-bingo { --calendar-tag-color: rgba(186, 30, 61, 0.267); }
-
 .calendar-legend {
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 18px;
 }
 
 .calendar-legend span {
@@ -356,6 +348,33 @@
   gap: 6px;
   color: var(--muted);
   font-size: 0.7rem;
+}
+
+.calendar-legend-row {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.calendar-manage-tags-button {
+  min-height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  color: var(--muted);
+  background: rgb(255 255 255 / 5%);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.calendar-manage-tags-button svg {
+  width: 15px;
+  height: 15px;
 }
 
 .calendar-day-view {
@@ -503,6 +522,137 @@
 
 .calendar-entry-dialog {
   width: min(620px, 100%);
+}
+
+.calendar-tag-dialog {
+  width: min(680px, 100%);
+}
+
+.calendar-tag-manager-body {
+  display: grid;
+  gap: 18px;
+}
+
+.calendar-tag-manager-list {
+  display: grid;
+  gap: 8px;
+}
+
+.calendar-tag-manager-list article {
+  min-height: 48px;
+  padding: 8px 10px 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+}
+
+.calendar-tag-manager-list article > span,
+.calendar-tag-manager-list article > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar-tag-manager-list article > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.calendar-tag-manager-list button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: rgb(255 255 255 / 5%);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.calendar-tag-manager-list button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.calendar-tag-editor {
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+  background: rgb(255 255 255 / 4%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+
+.calendar-tag-editor-heading,
+.calendar-tag-color-field,
+.calendar-tag-editor-actions {
+  display: flex;
+  align-items: center;
+}
+
+.calendar-tag-editor-heading {
+  gap: 8px;
+  color: var(--text);
+}
+
+.calendar-tag-editor-heading svg {
+  width: 18px;
+  height: 18px;
+}
+
+.calendar-tag-color-field {
+  width: fit-content;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.calendar-tag-color-field input {
+  width: 48px;
+  height: 36px;
+  padding: 3px;
+  background: rgb(255 255 255 / 5%);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.calendar-tag-color-field .calendar-dot {
+  width: 11px;
+  height: 11px;
+}
+
+.calendar-tag-editor-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-tag-editor-actions .save-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.calendar-tag-error {
+  margin: 0;
+  color: #ff9191;
+  font-size: 0.78rem;
+}
+
+.calendar-tag-hint {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
 }
 
 .calendar-form-choice {
@@ -662,5 +812,19 @@
 
   .calendar-day-item {
     flex-wrap: wrap;
+  }
+
+  .calendar-legend-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .calendar-manage-tags-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .calendar-tag-editor-actions > button {
+    flex: 1 1 140px;
   }
 }

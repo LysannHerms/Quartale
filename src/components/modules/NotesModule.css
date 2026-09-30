@@ -105,19 +105,16 @@
 
 .notes-card-actions button,
 .notes-close-button {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: grid;
+  flex: 0 0 auto;
   place-items: center;
-  color: var(--muted);
+  color: var(--text);
   border: 1px solid var(--glass-border);
   border-radius: 50%;
-  background: rgb(255 255 255 / 5%);
+  background: rgb(255 255 255 / 6%);
   cursor: pointer;
-  transition:
-    color 160ms ease,
-    background 160ms ease,
-    transform 160ms ease;
 }
 
 .notes-card-actions button:hover,
@@ -229,11 +226,10 @@
   color: var(--text);
   border: 1px solid var(--glass-border);
   border-radius: 30px;
-  background: var(--glass);
+  background: color-mix(in srgb, var(--background) 20%, transparent);
+  font-weight: 700;
   box-shadow: 0 30px 90px rgb(0 0 0 / 42%);
   scrollbar-width: none;
-  backdrop-filter: blur(34px) saturate(150%);
-  -webkit-backdrop-filter: blur(34px) saturate(150%);
 }
 
 .notes-dialog::-webkit-scrollbar {
@@ -246,12 +242,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
+  color: #ffff;
 }
 
 .notes-dialog h2 {
   margin-top: 5px;
   font-size: clamp(1.8rem, 5vw, 2.8rem);
   font-weight: 560;
+  color: #ffff;
 }
 
 .notes-form {
