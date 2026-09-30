@@ -67,7 +67,7 @@
   min-width: 0;
   padding: 20px;
   color: var(--text);
-  background: var(--glass) 10%;
+  background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: 28px;
   box-shadow:
