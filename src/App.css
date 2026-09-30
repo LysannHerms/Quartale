@@ -13,7 +13,7 @@ button {
 .app {
   --background: #07070a;
   --text: #f7f5fb;
-  --muted: rgb(247 245 251 / 58%);
+  --muted: rgba(18, 18, 20, 0.58);
   --glass: rgb(24 22 29 / 62%);
   --glass-strong: rgb(31 29 37 / 82%);
   --glass-border: rgb(255 255 255 / 13%);
@@ -104,7 +104,7 @@ button {
   /* Hintergrund und Schrift */
   --background: #7cd9f0;
   --text: #f4fff7;
-  --muted: rgb(23 17 14 / 40%);
+  --muted: rgb(23 17 14 / 80%);
 
   /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 50%);
@@ -163,7 +163,7 @@ button {
   /* Hintergrund und Schrift */
   --background: #78e186;
   --text: #f4fff7;
-  --muted: rgb(23 17 14 / 55%);
+  --muted: rgba(14, 23, 14, 0.8);
 
   /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 48%);
@@ -231,7 +231,7 @@ button {
   /* Hintergrund und Schrift */
   --background: #f7a466;
  --text: #f4fff7;
-  --muted: rgb(23 17 14 / 55%);
+  --muted: rgb(23 17 14 / 80%);
 
   /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 48%);
@@ -300,7 +300,7 @@ button {
   /* Hintergrund und Schrift */
   --background: #913fd4;
   --text: #f4fff7;
-  --muted: rgba(0, 0, 0, 0.55);
+  --muted: rgba(23, 7, 7, 0.8);
 
   /* GlasflÃ¤chen */
   --glass: rgb(255 255 255 / 48%);
@@ -793,17 +793,14 @@ button {
 
 .view-heading h2 {
   margin: 0;
+  padding-top: 8px;
   color: var(--text);
   font-size: 1.55rem;
   font-weight: 520;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.035em;;
 }
 
-.view-heading p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
+
 
 /* Dashboardkarten */
 

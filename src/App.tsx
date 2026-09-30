@@ -23,7 +23,7 @@ import {
   MovementModule,
 } from './components/modules/MovementModule'
 import { EntryForm } from './components/ui/EntryForm'
-import { descriptions, modules } from './data/modules'
+import { modules } from './data/modules'
 import { quarters } from './data/quarters'
 import {
   loadBingoBoards,
@@ -289,7 +289,6 @@ function App() {
 
             <div>
               <h2>{activeModule.label}</h2>
-              <p>{descriptions[activeView]}</p>
             </div>
           </section>
 
